@@ -1,0 +1,5 @@
+*.wp
+.lock*
+.waf-*
+build
+docs

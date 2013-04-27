@@ -1,0 +1,13 @@
+---
+language: c # vala
+compiler:
+  - gcc
+  - clang
+env:
+  - VALAC=valac-0.18
+  - VALAC=valac-0.16
+before_install:
+  - sudo add-apt-repository -y ppa:vala-team/ppa
+  - sudo apt-get update -qq
+install: 'sudo apt-get install -qq libgee-dev $VALAC'
+script: ./waf configure build test

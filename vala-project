@@ -1,0 +1,104 @@
+#!/bin/bash
+
+set -e
+
+assets=$(dirname $BASH_SOURCE)/assets
+cmd=${1:-help}
+
+function green(){
+  echo -e '\e[1;32m'"$*"'\e[0m'
+}
+
+function run(){
+  green "$*"
+  "$@"
+  echo
+}
+
+function die() {
+  local msg=$1
+  local code=${2:-1}
+  echo -e "Error: $msg" >&2
+  exit $code
+}
+
+function usage() {
+  echo "USAGE: $(basename $0) [command] [options]"
+  echo "  Commands"
+  echo "       init         - Initialize a project"
+  echo "       add-lib NAME - add a new library NAME to project"
+  echo "       add-bin NAME - add a new executable NAME to project"
+}
+
+function guess_gir_name() {
+  local name=$1
+  local gir_name_guess=""
+  for word in ${name//_/ }; do
+    gir_name_guess="${gir_name_guess}${word^}"
+  done
+  echo $gir_name_guess
+}
+
+function ask() {
+  local question=$1
+  local default=$2
+  read -p "$question? [$default]: " response
+  echo ${response:-$default}
+}
+
+function build_cfg() {
+  local type=$1
+  local name=$2
+  if [[ $type != 'tests' ]]; then
+    local file=src/$type/$name/build.cfg
+    if [[ $type == 'lib' ]]; then
+      local gir_name=$(ask "Gir name" "$(guess_gir_name "$name")")
+    fi
+    local internal=$(ask "Internal Packages")
+    local external=$(ask "External Packages")
+  else
+    local file=tests/lib/$name/build.cfg
+    local internal="${name}-1.0"
+  fi
+
+  green "Generating $file"
+
+  if [[ $type == 'lib' ]]; then
+    cat > $file <<EOF
+[default]
+gir_name = $gir_name
+
+EOF
+  fi
+  echo "[packages]" >> $file
+  [[ -n $internal ]] && echo "internal = $internal" >> $file
+  [[ -n $external ]] && echo "external = $external" >> $file
+  [[ $type == 'lib' ]] && build_cfg tests $name
+}
+
+case "$cmd" in
+  init)
+    run cp -av $assets/. .
+    if [ ! -d '.git' ]; then
+      run git init
+      run git add .
+      run git status
+    fi
+    ;;
+  add-lib)
+    name=$2
+    run mkdir -p {src,tests}/lib/$name
+    build_cfg lib $name
+    ;;
+  add-bin)
+    name=$2
+    run mkdir -p src/bin/$name
+    build_cfg lib $name
+    ;;
+  [--]help|-h)
+    usage
+    exit
+    ;;
+  *) die "Unknown command '$cmd'\n\n$(usage)" 2
+    ;;
+esac
