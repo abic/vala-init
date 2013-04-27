@@ -8,41 +8,32 @@ test features as WAF Tools.
 Usage
 -----
 
+    mkdir my-awesome-project
+    cd my-awesome-project
+    vala-project init
+    vala-project add-lib my-library
+    vala-project add-bin my-program
+
 Directory Structure
 -------------------
 
     .
-    ├── build
-    ├── ci_build.sh
-    ├── ci_install.sh
     ├── COPYING
-    ├── docs
-    ├── examples
-    │   └── example-1.vala
+    ├── lib.pc.in
     ├── README.md
     ├── src
     │   ├── bin
     │   │   └── my-program
-    │   │       ├── build.cfg
-    │   │       └── main.vala
+    │   │       └── build.cfg
     │   └── lib
     │       └── my-library
-    │           ├── build.cfg
-    │           ├── lib.vala
-    │           └── my-library.pc.in
+    │           └── build.cfg
     ├── tests
-    │   ├── assets
-    │   │   └── test_file.txt
-    │   ├── bin
     │   ├── helpers
     │   │   └── testcase.vala
-    │   ├── lib
-    │   │       ├── build.cfg
-    │   │       ├── helpers.vala
-    │   │       └── main.vala
-    ├── vapi
-    │   └── external.vapi
+    │   └── lib
+    │       └── my-library
+    │           └── build.cfg
     ├── version.cfg
     ├── waf
     └── wscript
-

@@ -33,7 +33,7 @@ function usage() {
 function guess_gir_name() {
   local name=$1
   local gir_name_guess=""
-  for word in ${name//_/ }; do
+  for word in ${name//[_-]/ }; do
     gir_name_guess="${gir_name_guess}${word^}"
   done
   echo $gir_name_guess
@@ -93,7 +93,7 @@ case "$cmd" in
   add-bin)
     name=$2
     run mkdir -p src/bin/$name
-    build_cfg lib $name
+    build_cfg bin $name
     ;;
   [--]help|-h)
     usage
