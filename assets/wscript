@@ -55,9 +55,10 @@ def path_join(*args):
     return os.path.join(*args)
 
 def build(bld):
-    default_packages = {
+    default_build_config = {
         'external': '',
-        'internal': ''
+        'internal': '',
+        'description': ''
     }
 
     vapi_dirs = ['.', 'vapi']
@@ -67,7 +68,7 @@ def build(bld):
     #        can be evaluated later (after all tasks are defined).
     for lib in sorted(get_dirs('src/lib')):
         lib_dir = path_join('src/lib', lib)
-        build_config = ConfigParser.SafeConfigParser(default_packages)
+        build_config = ConfigParser.SafeConfigParser(default_build_config)
         build_config.read(path_join(lib_dir, 'build.cfg'))
 
         gir_name = build_config.get('default', 'gir_name')
@@ -95,7 +96,7 @@ def build(bld):
 
     for exe in get_dirs('src/bin'):
         exe_dir = path_join('src/bin', exe)
-        build_config = ConfigParser.SafeConfigParser(default_packages)
+        build_config = ConfigParser.SafeConfigParser(default_build_config)
         build_config.read(path_join(exe_dir, 'build.cfg'))
 
         bld(features='c cprogram',
@@ -108,7 +109,7 @@ def build(bld):
 
     for test in get_dirs('tests/lib'):
         test_dir = path_join('tests/lib', test)
-        build_config = ConfigParser.SafeConfigParser(default_packages)
+        build_config = ConfigParser.SafeConfigParser(default_build_config)
         build_config.read(path_join(test_dir, 'build.cfg'))
 
         bld(features='c cprogram',
