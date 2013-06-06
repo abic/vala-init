@@ -85,7 +85,7 @@ def build(bld):
             use = build_config.get('packages', 'internal'))
 
         bld(features='subst',
-            source = 'lib.pc.in' % (lib, lib),
+            source = 'lib.pc.in',
             target = '%s-%s.pc' % (lib, bld.env.API_VERSION),
             NAME = lib,
             GIR_NAME = gir_name,

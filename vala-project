@@ -59,6 +59,7 @@ function build_cfg() {
   else
     local file=tests/lib/$name/build.cfg
     local internal="${name}-1.0"
+    local external=
   fi
 
   green "Generating $file"
@@ -73,7 +74,7 @@ EOF
   echo "[packages]" >> $file
   [[ -n $internal ]] && echo "internal = $internal" >> $file
   [[ -n $external ]] && echo "external = $external" >> $file
-  [[ $type == 'lib' ]] && build_cfg tests $name
+  [[ $type == 'lib' ]] && build_cfg tests $name || true
 }
 
 case "$cmd" in
