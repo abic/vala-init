@@ -46,6 +46,30 @@ function ask() {
   echo ${response:-$default}
 }
 
+function main_vala() {
+  local type=$1
+  local name=$2
+  if [[ $type == 'tests' ]]; then
+    local file=tests/lib/$name/main.vala
+    local tests_main=true
+  else
+    local file=src/bin/$name/main.vala
+  fi
+
+  green "Generating $file"
+
+  (
+    echo "int main(string[] args) {"
+    if [[ $tests_main == true ]]; then
+      echo "    Test.init(ref args);"
+      echo "    return Test.run();"
+    else
+      echo "    return 0;"
+    fi
+    echo "}"
+  ) > $file
+}
+
 function build_cfg() {
   local type=$1
   local name=$2
@@ -90,11 +114,13 @@ case "$cmd" in
     name=$2
     run mkdir -p {src,tests}/lib/$name
     build_cfg lib $name
+    main_vala tests $name
     ;;
   add-bin)
     name=$2
     run mkdir -p src/bin/$name
     build_cfg bin $name
+    main_vala bin $name
     ;;
   [--]help|-h)
     usage
