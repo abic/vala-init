@@ -9,5 +9,6 @@ env:
 before_install:
   - sudo add-apt-repository -y ppa:vala-team/ppa
   - sudo apt-get update -qq
-install: 'sudo apt-get install -qq libgee-dev $VALAC'
+  - sudo apt-get install -qq ${VALAC}
+  - sudo apt-get install -qq libgee-dev
 script: ./waf configure build test
